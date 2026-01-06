@@ -1,4 +1,4 @@
-{% extends "Base.html" %}
+{% extends "BaseWithNav.html" %}
 
 {% block title %}
 <title>Employee Timesheet - Home</title>
@@ -11,27 +11,12 @@
 
 <!--Navbar-->
 {% block body %}
-  <header 
-    style="background:#2c3e50; color:white; padding:2vh; display:flex; justify-content:space-between; align-items:center; position:fixed; top:0; left:0; width:100%; height:8vh; z-index:1000;"
-  >
-    <h1 style="margin:0; font-size:2.5vh;">Employee Timesheet System</h1>
-    <nav style="display: flex; margin-right: 6vh; gap: 4vh;">
-      <a href="/home" 
-         style="color:white; margin-left:2%; text-decoration:none; font-weight:500; font-size:2vh;">
-         Home
-      </a>
-      <a href="/logout" 
-         style="color:white; margin-left:2%; text-decoration:none; font-weight:500; font-size:2vh;">
-         Logout
-      </a>
-    </nav>
-  </header>
+  
   <div style="height:8vh">
 
   </div>
   <!-- Dashboard -->
   <main class="dashboard">
-    <p>Use the navigation bar above to manage your timesheets and profile.</p>
 
     <!-- Add Task Button -->
     <div class="add-task-container">
@@ -81,7 +66,7 @@
         </div>
         <br />
 
-        <button type="submit">Submit</button>
+        <button type="submit" class="add-task-btn">Submit</button>
         <button type="button" id="closeFormBtn" class="close-btn">Close</button>
       </form>
     </div>
@@ -104,7 +89,7 @@
         <tbody id="taskTableBody">
           {% if entries %}
             {% for entry in data %}
-              <tr>
+              <tr id={{ entry.id }}>
                 <td>{{ entry.Project_Name }}</td>
                 <td>{{ entry.Task }}</td>
                 <td>{{ entry.activity }}</td>
@@ -112,6 +97,11 @@
                 <td>{{ entry.overtime }}</td>
                 <td>{{ entry.description }}</td>
                 <td>
+                
+                    <form action="/update_task/{{ entry.id }}" method="POST">
+                    <button type="submit" class="update-btn">Update</button>
+                  </form>
+                  
                   <form action="/delete_task/{{ entry.id }}" method="POST">
                     <button type="submit" class="delete-btn">Delete</button>
                   </form>
@@ -127,7 +117,7 @@
   </main>
 
   <!-- Footer -->
-  <footer class="footer" style="padding: 12px; text-align: center; color: #666;">
+  <footer class="footer" style="padding: 1px; text-align: center; color: #aeaeae;">
     <p>&copy; 2025 Employee Timesheet Project</p>
   </footer>
 

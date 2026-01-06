@@ -1,0 +1,96 @@
+{% extends "BaseWithNav.html" %}
+
+{% block style %}
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}"> -->
+{% endblock %}
+
+
+{% block  title %}
+<title>Update Page</title>
+{% endblock %}
+
+{% block body %}
+<div>
+    <h2>Update Your Task</h2>
+    <form method="POST" action="/update_task/{{ task.id }}">
+        <label for="projectDropdown">Project :</label>
+        <select id="projectDropdown" name="project_id" required>
+            <option value="">-- Select Project --</option>
+        </select><br><br>
+
+        <label for="taskDropdown">Task :</label>
+        <select id="taskDropdown" name="task_id" required>
+            <option value="">-- Select Task --</option>
+        </select><br><br>
+
+        <label for="activity">Activity:</label>
+        <input type="text" id="activity" name="activity" value="{{ task.activity }}"><br><br>
+
+        <label for="hours">Work Hours:</label>
+        <input type="number" id="hours" name="hours" step="0.5" min="0" max="12" value="{{ task.hours }}" required><br><br>
+
+        <label for="overtime">Overtime:</label>
+        <input type="number" id="overtime" name="overtime" step="0.5" min="0" max="12" value="{{ task.overtime }}"><br><br>
+
+        <label for="description">Description:</label><br>
+        <textarea id="description" name="description" rows="4" cols="50" required>{{ task.description }}</textarea><br><br>
+
+        <input type="submit" value="Update">
+    </form>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const projectDropdown = document.getElementById('projectDropdown');
+      const taskDropdown = document.getElementById('taskDropdown');
+      const currentProject = "{{ task.project_id }}";
+      const currentTask = "{{ task.task_id }}";
+
+      // Fetch projects and populate
+      fetch('/getProjects')
+        .then(res => res.json())
+        .then(data => {
+          projectDropdown.innerHTML = '<option value="">-- Select Project --</option>';
+          (data.projects || []).forEach(proj => {
+            const option = document.createElement('option');
+            option.value = proj.id;
+            option.textContent = proj.name;
+            projectDropdown.appendChild(option);
+          });
+          if (currentProject) {
+            projectDropdown.value = String(currentProject);
+            projectDropdown.dispatchEvent(new Event('change'));
+          }
+        })
+        .catch(() => {
+          projectDropdown.innerHTML = '<option value="">Failed to load</option>';
+        });
+
+      // Fetch tasks when project changes
+      projectDropdown.addEventListener('change', function () {
+        const projectId = this.value;
+        taskDropdown.innerHTML = '<option value="">-- Select Task --</option>';
+        if (projectId) {
+          fetch(`/getTasks/${projectId}`)
+            .then(res => res.json())
+            .then(data => {
+              (data.tasks || []).forEach(task => {
+                const option = document.createElement('option');
+                option.value = task.id;
+                option.textContent = task.task;
+                taskDropdown.appendChild(option);
+              });
+              if (currentTask && String(projectId) === String(currentProject)) {
+                taskDropdown.value = String(currentTask);
+              }
+            })
+            .catch(() => {
+              taskDropdown.innerHTML = '<option value="">Failed to load</option>';
+            });
+        }
+      });
+    });
+    </script>
+</div>
+
+{% endblock %}
+

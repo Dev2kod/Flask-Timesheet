@@ -1,0 +1,115 @@
+{% extends "Base.html" %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+{% endblock %}
+{% block  title %}
+<title>Login Page</title>
+{% endblock %}
+{% block body %}
+
+ <div class="bg-shapes">
+    <span class="shape shape-1"></span>
+    <span class="shape shape-2"></span>
+    <span class="shape shape-3"></span>
+  </div>
+
+
+  <div class="page">
+ 
+    <header class="header">
+      <nav class="nav">
+        <div class="nav-right">
+        
+        </div>
+      </nav>
+    </header>
+ 
+   
+    <main class="hero">
+      <section class="hero-text">
+<div class="login-container">
+        {% if flag == 1 %}
+        <div class="error-message">
+            <p style="color: red;">{{ error }}</p>
+        </div>
+        {% endif %}
+        <h2>LOGIN</h2>
+        <form method="POST" action="/login">
+            <input name="Username" type="text" placeholder="Username" required>
+            <input name="Password" type="password" placeholder="Password" required>
+            <button type="submit">LOGIN</button>
+            <div class="link">
+              Don't have an account? <span><a href="/signup">Signup</a></span>
+              
+            </div>
+            
+        </form>
+    </div>
+      </section>
+ 
+      <section class="hero-art">
+       
+        <img src="{{ url_for('static', filename='landingImage.png') }}" style="width: 40vw;" alt="Hero Image" class="hero-image" />
+         
+          <g opacity="0.9">
+            <path d="M90,310 C60,250 90,170 150,140 C210,110 240,170 220,210 C200,250 150,330 120,330 Z"
+                  fill="#4BA56E"/>
+            <path d="M190,330 C170,280 210,220 260,200 C310,180 330,220 310,260 C290,300 240,340 210,340 Z"
+                  fill="#2D7D52"/>
+          </g>
+ 
+         
+          <rect x="240" y="80" rx="18" ry="18" width="260" height="310" fill="#58A8F6" />
+          <rect x="240" y="80" rx="18" ry="18" width="260" height="310" fill="none" stroke="#0D2E4F" stroke-width="6" />
+         
+          <g fill="#fff">
+           
+            <circle cx="280" cy="150" r="8" />
+            <rect x="300" y="142" width="140" height="16" rx="8" />
+            <circle cx="280" cy="200" r="8" />
+            <rect x="300" y="192" width="170" height="16" rx="8" />
+            <circle cx="280" cy="250" r="8" />
+            <rect x="300" y="242" width="150" height="16" rx="8" />
+           
+            <rect x="330" y="300" width="110" height="34" rx="17" />
+          </g>
+        
+         
+          <rect x="470" y="300" width="56" height="60" rx="4" fill="#719BC5"/>
+          <path d="M498,300 C500,260 540,250 550,280" fill="none" stroke="#4BA56E" stroke-width="6" />
+ 
+         
+          <g transform="translate(540,220)">
+            <circle cx="0" cy="-40" r="16" fill="#F9D3C4"/>
+            <rect x="-12" y="-24" width="24" height="55" rx="10" fill="#FFA36E"/>
+            <rect x="-30" y="22" width="60" height="78" rx="12" fill="#BFD3E6"/>
+            <rect x="-36" y="98" width="25" height="8" rx="4" fill="#0D2E4F"/>
+            <rect x="10" y="98" width="25" height="8" rx="4" fill="#0D2E4F"/>
+           
+            <line x1="24" y1="0" x2="110" y2="-80" stroke="#FFA36E" stroke-width="6" stroke-linecap="round"/>
+          </g>
+ 
+         
+          <g transform="translate(210,240)">
+            <circle cx="0" cy="-40" r="16" fill="#F7CBB7"/>
+            <rect x="-14" y="-24" width="28" height="55" rx="10" fill="#BFD3E6"/>
+            <rect x="-34" y="22" width="68" height="78" rx="12" fill="#7A86A9"/>
+            <rect x="-40" y="98" width="25" height="8" rx="4" fill="#0D2E4F"/>
+            <rect x="15" y="98" width="25" height="8" rx="4" fill="#0D2E4F"/>
+           
+            <line x1="24" y1="0" x2="90" y2="-84" stroke="#BFD3E6" stroke-width="6" stroke-linecap="round"/>
+          </g>
+ 
+         
+          <circle cx="620" cy="100" r="38" fill="none" stroke="#FF6A2C" stroke-width="6" />
+          <line x1="620" y1="100" x2="620" y2="80" stroke="#FF6A2C" stroke-width="6" stroke-linecap="round"/>
+          <line x1="620" y1="100" x2="640" y2="100" stroke="#FF6A2C" stroke-width="6" stroke-linecap="round"/>
+        </svg>
+      </section>
+    </main>
+ 
+   
+    <div class="page-shadow"></div>
+  </div>
+{% endblock %}
+

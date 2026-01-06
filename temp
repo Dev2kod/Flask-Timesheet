@@ -1,0 +1,13 @@
+<div class="signup-box">
+    <h2>SIGN UP</h2>
+    <form action="/signup" method="POST">
+      <input name="Email" type="email" placeholder="Email" required />
+      <input name="Username" type="text" placeholder="Username" required />
+      <input name="Password" type="password" placeholder="Password" required />
+      <input name="CPassword" placeholder="Confirm Password" required />
+      <input name="Fname"  type="text" placeholder="First Name" />
+      <input name="Lname" type="text" placeholder="Last Name" />
+      <input name="ContactNo" type="number" placeholder="Contact Number" />
+      <button type="submit">REGISTER</button>
+    </form>
+    </div>

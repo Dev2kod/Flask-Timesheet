@@ -1,0 +1,9 @@
+CREATE TABLE UserDetail(
+	id INT Identity(1,1),
+	Fname VARCHAR(20),
+	Lname VARCHAR(20),
+	Username VARCHAR(20) UNIQUE,
+	ContactNo VARCHAR(11),
+	Password VARCHAR(100),
+	Email VARCHAR(100) UNIQUE
+)

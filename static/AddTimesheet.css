@@ -1,0 +1,115 @@
+body {
+    font-family: Arial , sans-serif;
+    background-color: #f4f6f8;
+}
+
+.container {
+    width: 1200px;
+    height: 440px;
+    margin: 30px auto;
+    background-color: #ffffff;
+    border: 1px solid #9db4c0;
+    padding: 20px;
+}
+
+/* Buttons */
+.top-buttons,
+bottom-buttons {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.top-buttons button,
+.bottom-buttons button{
+    padding: 6px 14px;
+    margin: 3px;
+    cursor: pointer;
+}
+
+/* Header */
+h3 {
+    background-color: #dce6f1;
+    padding: 10px;
+    border: 1px solid #9db4c0;
+}
+
+/* Form rows */
+.form-row {
+    display: flex;
+    align-items: center;
+    margin: 12px 0;
+}
+
+.form-row label {
+    width: 220px;
+    font-weight: bold;
+}
+
+.form-row select,
+.form-row input {
+    width: 300px;
+    padding: 6px;
+}
+
+.radio-group {
+    display: flex;          /* all options on one line */
+    gap: 20px;              /* spacing between each option */
+}
+
+.radio-group label {
+    display: inline-flex;   /* radio + text inline */
+    align-items: center;    /* vertical centering */
+    white-space: nowrap;    /* keep text on one line */
+}
+
+.form-row textarea {
+    width: 400px;      /* same width as inputs */
+    height: 100px;
+    padding: 6px;
+    resize: vertical;  /* allow vertical resize only */
+    font-family: Arial, sans-serif;
+}
+
+/*Increasing size of date box*/
+input[type="date"] {
+    width: 200px;   /* increase width */
+    padding: 6px;   /* add padding for better look */
+    font-size: 14px; /* optional: make text bigger */
+}
+
+
+/*adding color in buttons*/
+.top-buttons button,
+.bottom-buttons button {
+    padding: 6px 14px;
+    margin: 3px;
+    cursor: pointer;
+    background-color: #e6f0fa;   /* light blue background */
+    border: 1px solid #9db4c0;   /* subtle border */
+    border-radius: 4px;          /* rounded corners */
+    transition: background-color 0.3s ease;
+}
+
+.top-buttons button:hover,
+.bottom-buttons button:hover {
+    background-color: #d0e4f7;   /* slightly darker on hover */
+}
+
+/*reduce margin of buttons from bottom*/
+.top-buttons,
+.bottom-buttons {
+    text-align: left;
+    margin-bottom: 1px;   /* smaller space */
+}
+
+
+
+/* mandatory start(*) */
+.mandatory {
+    color: red;
+}
+
+
+
+
+

@@ -1,0 +1,189 @@
+{% extends "Base.html" %}
+
+{% block title %}
+<title>Employee Timesheet - Home</title>
+  
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+{% endblock %}
+
+<!--Navbar-->
+{% block body %}
+  <header 
+    style="background:#2c3e50; color:white; padding:2vh; display:flex; justify-content:space-between; align-items:center; position:fixed; top:0; left:0; width:100%; height:8vh; z-index:1000;"
+  >
+    <h1 style="margin:0; font-size:2.5vh;">Employee Timesheet System</h1>
+    <nav style="display: flex; margin-right: 6vh; gap: 4vh;">
+      <a href="/home" 
+         style="color:white; margin-left:2%; text-decoration:none; font-weight:500; font-size:2vh;">
+         Home
+      </a>
+      <a href="/logout" 
+         style="color:white; margin-left:2%; text-decoration:none; font-weight:500; font-size:2vh;">
+         Logout
+      </a>
+    </nav>
+  </header>
+  <div style="height:8vh">
+
+  </div>
+  <!-- Dashboard -->
+  <main class="dashboard">
+    <p>Use the navigation bar above to manage your timesheets and profile.</p>
+
+    <!-- Add Task Button -->
+    <div class="add-task-container">
+      <button type="button" id="addTaskBtn" class="add-task-btn">+ Add Task</button>
+    </div>
+
+    <!-- Task Form (popup) -->
+    <div class="task-form-container">
+      <form method="POST" action="/add_task">
+        <div>
+          <label>Select Project :</label>
+          <select id="projectDropdown" name="project_id" required>
+            <option value="">-- Select Project --</option>
+          </select>
+        </div>
+        <br />
+
+        <div>
+          <label>Select Task :</label>
+          <select id="taskDropdown" name="task_id" required>
+            <option value="">-- Select Task --</option>
+          </select>
+        </div>
+        <br />
+
+        <div>
+          <label>Select Activity :</label>
+          <input type="text" name="activity" required />
+        </div>
+        <br />
+
+        <div>
+          <label>Actual Hours :</label>
+          <input type="number" name="hours" step="0.5" min="0" max="12" required />
+        </div>
+        <br />
+
+        <div>
+          <label>Overtime :</label>
+          <input type="number" name="overtime" step="0.5" min="0" max="12" />
+        </div>
+        <br />
+
+        <div>
+          <label>Description :</label>
+          <textarea name="description" rows="4" cols="50" required></textarea>
+        </div>
+        <br />
+
+        <button type="submit">Submit</button>
+        <button type="button" id="closeFormBtn" class="close-btn">Close</button>
+      </form>
+    </div>
+
+    <!-- Task Table -->
+    <section class="task-section">
+      <h2>Your Logged Tasks</h2>
+      <table class="task-table">
+        <thead>
+          <tr>
+            <th>Project Name</th>
+            <th>Task Name</th>
+            <th>Activity</th>
+            <th>Actual Work Hours</th>
+            <th>Overtime</th>
+            <th>Description</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody id="taskTableBody">
+          {% if entries %}
+            {% for entry in data %}
+              <tr>
+                <td>{{ entry.Project_Name }}</td>
+                <td>{{ entry.Task }}</td>
+                <td>{{ entry.activity }}</td>
+                <td>{{ entry.hours }}</td>
+                <td>{{ entry.overtime }}</td>
+                <td>{{ entry.description }}</td>
+                <td>
+                  <form action="/delete_task/{{ entry.id }}" method="POST">
+                    <button type="submit" class="delete-btn">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr><td colspan="7">No tasks logged yet</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" style="padding: 12px; text-align: center; color: #666;">
+    <p>&copy; 2025 Employee Timesheet Project</p>
+  </footer>
+
+  <!-- JS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const addBtn = document.getElementById('addTaskBtn');
+      const formContainer = document.querySelector('.task-form-container');
+      const closeBtn = document.getElementById('closeFormBtn');
+      const projectDropdown = document.getElementById('projectDropdown');
+      const taskDropdown = document.getElementById('taskDropdown');
+
+      // Toggle popup
+      addBtn.addEventListener('click', () => formContainer.classList.toggle('show'));
+      closeBtn.addEventListener('click', () => formContainer.classList.remove('show'));
+
+      // Fetch projects
+      fetch('/getProjects')
+        .then(res => res.json())
+        .then(data => {
+          projectDropdown.innerHTML = '<option value="">-- Select Project --</option>';
+          (data.projects || []).forEach(proj => {
+            const option = document.createElement('option');
+            option.value = proj.id;
+            option.textContent = proj.name;
+            projectDropdown.appendChild(option);
+          });
+        })
+        .catch(() => {
+          projectDropdown.innerHTML = '<option value="">Failed to load</option>';
+        });
+
+      // Fetch tasks when project changes
+      projectDropdown.addEventListener('change', function () {
+        const projectId = this.value;
+        taskDropdown.innerHTML = '<option value="">-- Select Task --</option>';
+        if (projectId) {
+          fetch(`/getTasks/${projectId}`)
+            .then(res => res.json())
+            .then(data => {
+              (data.tasks || []).forEach(task => {
+                const option = document.createElement('option');
+                option.value = task.id;
+                option.textContent = task.task;
+                taskDropdown.appendChild(option);
+              });
+            })
+            .catch(() => {
+              taskDropdown.innerHTML = '<option value="">Failed to load</option>';
+            });
+        }
+      });
+    });
+  </script>
+
+{% endblock %}
+
+
+

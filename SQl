@@ -1,0 +1,58 @@
+CREATE TABLE UserDetail(
+	id INT Identity(1,1),
+	Fname VARCHAR(20),
+	Lname VARCHAR(20),
+	Username VARCHAR(20) UNIQUE,
+	ContactNo VARCHAR(11),
+	Password VARCHAR(100),
+	Email VARCHAR(100) UNIQUE
+)
+
+
+CREATE TABLE TimesheetProjects(
+	id INT Identity(1,1),
+	Project_Name VARCHAR(50) NOT NULL,
+)
+
+CREATE TABLE TimesheetTasks(
+	id INT Identity(1,1),
+	Proj_id INT Not Null,
+	Task VARCHAR(100) NOT NULL,
+	CONSTRAINT FK_TimesheetTasks_Projects
+	FOREIGN KEY (Proj_id) REFERENCES TimesheetProjects(id)
+)
+
+
+-- vasu
+
+ALTER TABLE dbo.UserDetail
+ADD CONSTRAINT PK_UserDetail PRIMARY KEY (id);
+
+ALTER TABLE dbo.TimesheetProjects
+ADD CONSTRAINT PK_TimesheetProjects PRIMARY KEY (id);
+
+ALTER TABLE dbo.TimesheetTasks
+ADD CONSTRAINT PK_TimesheetProjects PRIMARY KEY (id);
+
+CREATE TABLE dbo.TimesheetMain (
+    id INT IDENTITY(1,1) PRIMARY KEY,          
+    project_id INT NOT NULL,
+    user_id INT NOT NULL,
+    task_id INT NOT NULL,
+    activity VARCHAR(500) NULL,
+    hours DECIMAL(10,2) NOT NULL,
+    overtime DECIMAL(10,2) NULL DEFAULT 0, 
+    description VARCHAR(MAX) NOT NULL,
+
+    CONSTRAINT FK_TimesheetMain_UserDetail
+        FOREIGN KEY (user_id)
+        REFERENCES dbo.UserDetail(id),
+
+    CONSTRAINT FK_TimesheetMain_TimesheetProjects
+        FOREIGN KEY (project_id)
+        REFERENCES dbo.TimesheetProjects(id),
+
+    CONSTRAINT FK_TimesheetMain_TimesheetTasks
+        FOREIGN KEY (task_id)
+        REFERENCES dbo.TimesheetTasks(id)
+);

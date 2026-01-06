@@ -1,0 +1,116 @@
+{% extends "Base.html" %}
+
+{% block title %}
+
+{% endblock %}
+
+
+{% block style %}
+<link rel="stylesheet" href="../static/AddTimesheet.css">
+{% endblock %}
+
+
+{% block body %}
+<div class="container">
+    <h3>
+        Add Task List For The Date:
+        <input type="date" name="work_date" form="timesheetForm" required>
+        <span class="mandatory">*</span>
+    </h3>
+
+    <form id="timesheetForm" method="POST" action="/submit-timesheet">
+        <!-- Project Dropdown -->
+        <div class="form-row">
+            <label>Select Project <span class="mandatory">*</span></label>
+            <select id="projectDropdown" name="project_id" required>
+                <option value="">-- Select Project --</option>
+            </select>
+        </div>
+
+        <!-- Task Dropdown -->
+        <div class="form-row">
+            <label>Select Task <span class="mandatory">*</span></label>
+            <select id="taskDropdown" name="task_id" required>
+                <option value="">-- Select Task --</option>
+            </select>
+        </div>
+
+        <!-- Activity -->
+        <div class="form-row">
+            <label>Select Activity</label>
+            <select name="activity">
+                <option value="">-- Select Activity --</option>
+                <option value="coding">Coding</option>
+                <option value="training">Training</option>
+                <option value="testing">Testing</option>
+            </select>
+        </div>
+
+        <!-- Work Hours -->
+        <div class="form-row">
+            <label>Actual Work (hrs) <span class="mandatory">*</span></label>
+            <input type="number" name="work_hours" step="0.5" min="0" max="12" required>
+        </div>
+
+        <!-- Description -->
+        <div class="form-row">
+            <label>Description <span class="mandatory">*</span></label>
+            <textarea name="description" rows="4" cols="100" required></textarea>
+        </div>
+
+        <!-- Buttons -->
+        <div class="bottom-buttons">
+            <button type="submit" form="timesheetForm" name="action" value="add_more">Save & Add More</button>
+            <button type="submit" form="timesheetForm" name="action" value="refresh">Save & Refresh Task List</button>
+            <button type="submit" form="timesheetForm" name="action" value="close">Save & Close</button>
+            <button type="button">Close</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Load projects and tasks initially
+    fetch('/ProjData')
+        .then(response => response.json())
+        .then(data => {
+            const projectDropdown = document.getElementById('projectDropdown');
+            const taskDropdown = document.getElementById('taskDropdown');
+
+            // Populate projects
+            data.projects.forEach(proj => {
+                const option = document.createElement('option');
+                option.value = proj.id;
+                option.textContent = `${proj.id} - ${proj.name}`;
+                projectDropdown.appendChild(option);
+            });
+
+            // Populate tasks initially
+            data.tasks.forEach(task => {
+                const option = document.createElement('option');
+                option.value = task.id;
+                option.textContent = task.task;
+                taskDropdown.appendChild(option);
+            });
+        });
+
+    // Filter tasks when project changes
+    document.getElementById('projectDropdown').addEventListener('change', function () {
+        const projectId = this.value;
+        const taskDropdown = document.getElementById('taskDropdown');
+        taskDropdown.innerHTML = '<option value="">-- Select Task --</option>';
+
+        if (projectId) {
+            fetch(`/tasks/${projectId}`)
+                .then(response => response.json())
+                .then(data => {
+                    data.tasks.forEach(task => {
+                        const option = document.createElement('option');
+                        option.value = task.id;
+                        option.textContent = task.task;
+                        taskDropdown.appendChild(option);
+                    });
+                });
+        }
+    });
+</script>
+{% endblock %}

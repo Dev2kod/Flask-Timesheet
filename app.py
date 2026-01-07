@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, jsonify, redirect, url_for
+from flask import Flask, flash, render_template, request, session, jsonify, redirect, url_for
 import pyodbc
 from flask_bcrypt import Bcrypt
 
@@ -235,6 +235,76 @@ def delete_task(task_id):
     conn.close()
 
     return redirect(url_for("home"))
+
+
+
+@app.route("/update_task/<int:task_id>", methods=["GET", "POST"])
+def update_task(task_id):
+    user_id = session.get("user_id")
+    if not user_id:
+        return redirect(url_for("login"))
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+        # read and validate form values
+        project_raw = request.form.get("project_id")
+        task_raw = request.form.get("task_id")
+        if not project_raw or not task_raw:
+            flash("Missing project or task id.", "error")
+            return redirect(url_for("update_task", task_id=task_id))
+        try:
+            project_id = int(project_raw)
+            task_id_form = int(task_raw)
+        except ValueError:
+            flash("Project and Task IDs must be integers.", "error")
+            return redirect(url_for("update_task", task_id=task_id))
+
+        activity = request.form.get("activity", "")
+        hours_raw = request.form.get("hours")
+        if hours_raw is None or hours_raw == "":
+            flash("Hours is required.", "error")
+            return redirect(url_for("update_task", task_id=task_id))
+        try:
+            hours = float(hours_raw)
+        except ValueError:
+            flash("Invalid hours value.", "error")
+            return redirect(url_for("update_task", task_id=task_id))
+        overtime_raw = request.form.get("overtime")
+        overtime = float(overtime_raw) if overtime_raw not in (None, "") else None
+        description = request.form.get("description", "")
+
+        cursor.execute("""
+          UPDATE TimesheetMain
+          SET project_id=?, task_id=?, activity=?, hours=?, overtime=?, description=?
+          WHERE id=? AND user_id=?
+        """, (project_id, task_id_form, activity, hours, overtime, description, task_id, user_id))
+        conn.commit()
+        conn.close()
+        return redirect(url_for("home"))
+
+    # GET: fetch task to prefill form
+    cursor.execute("""
+        SELECT m.id, m.project_id, m.task_id, p.Project_Name, t.Task, m.activity, m.hours, m.overtime, m.description
+        FROM TimesheetMain m
+        JOIN TimesheetProjects p ON m.project_id = p.id
+        JOIN TimesheetTasks t ON m.task_id = t.id
+        WHERE m.id = ? AND m.user_id = ?
+    """, (task_id, user_id))
+    row = cursor.fetchone()
+    if not row:
+        conn.close()
+        flash("Task not found.", "error")
+        return redirect(url_for("home"))
+    columns = [c[0] for c in cursor.description]
+    task = dict(zip(columns, row))
+    conn.close()
+    return render_template("Update.html", task=task)
+
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

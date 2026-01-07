@@ -107,6 +107,16 @@ body {
   cursor: pointer;
 }
 
+.update-btn{
+  background: #1cadf5;
+  color: rgb(255, 255, 255);
+  border: 2px solid #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+
+}
+
 .delete-btn:hover {
   background: #c0392b;
   border-color: #922b21;

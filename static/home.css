@@ -138,7 +138,7 @@ body {
 
 /* show the form when .show is added */
 .task-form-container.show{
-  display: block;
+  display: grid;
 }
 
 /* small close button inside form */
@@ -146,10 +146,12 @@ body {
   background: #e74c3c;
   color: white;
   border: none;
-  padding: 0.4rem 0.8rem;
+  padding: 0.6rem 1.2rem;
   border-radius: 4px;
   cursor: pointer;
   margin-left: 0.5rem;
+  font-weight: bold;
+  border: 2px solid #c0392b; /* border */
 
 }
 

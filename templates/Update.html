@@ -1,7 +1,7 @@
 {% extends "BaseWithNav.html" %}
 
 {% block style %}
-<!-- <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}"> -->
+<link rel="stylesheet" href="{{ url_for('static', filename='Update.css') }}"> 
 {% endblock %}
 
 
@@ -10,9 +10,13 @@
 {% endblock %}
 
 {% block body %}
-<div>
+<div class="Updatetask">
     <h2>Update Your Task</h2>
     <form method="POST" action="/update_task/{{ task.id }}">
+
+        <label for="date">Date :</label>
+        <input type="date" id="date" name="Tdate" value="{{ task.Tdate }}" required><br><br>
+
         <label for="projectDropdown">Project :</label>
         <select id="projectDropdown" name="project_id" required>
             <option value="">-- Select Project --</option>
@@ -35,7 +39,8 @@
         <label for="description">Description:</label><br>
         <textarea id="description" name="description" rows="4" cols="50" required>{{ task.description }}</textarea><br><br>
 
-        <input type="submit" value="Update">
+        <input class="Updatetask_button" type="submit" value="Update">
+        <button class="Updatetask_button_close" type="button" onclick="window.location.href='/home'">Cancel</button>
     </form>
 
     <script>

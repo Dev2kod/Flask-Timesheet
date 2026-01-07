@@ -166,11 +166,12 @@ def home():
 
     # Get user's logged tasks
     cursor.execute("""
-        SELECT m.id, p.Project_Name, t.Task, m.activity, m.hours, m.overtime, m.description
+        SELECT m.id, p.Project_Name, t.Task, m.activity, m.hours, m.overtime, m.description , m.Tdate
         FROM TimesheetMain m
         JOIN TimesheetProjects p ON m.project_id = p.id
         JOIN TimesheetTasks t ON m.task_id = t.id
-        WHERE m.user_id = ?;
+        WHERE m.user_id = ?
+        ORDER BY m.Tdate DESC;
     """, (user_id,))
     rows = cursor.fetchall()
     columns = [col[0] for col in cursor.description]
@@ -190,6 +191,7 @@ def add_task():
         return redirect(url_for("login"))
 
     try:
+        Tdate = request.form.get("date")
         project_id = int(request.form.get("project_id"))
         task_id = int(request.form.get("task_id"))
         activity = request.form.get("activity")
@@ -201,9 +203,9 @@ def add_task():
         conn = get_connection()
         cursor = conn.cursor()
         cursor.execute("""
-            INSERT INTO TimesheetMain (user_id, project_id, task_id, activity, hours, overtime, description)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (user_id, project_id, task_id, activity, hours, overtime, description))
+            INSERT INTO TimesheetMain (user_id, project_id, task_id, activity, hours, overtime, description, Tdate)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (user_id, project_id, task_id, activity, hours, overtime, description, Tdate))
         conn.commit()
         conn.close()
     except Exception as e:
@@ -251,6 +253,7 @@ def update_task(task_id):
         # read and validate form values
         project_raw = request.form.get("project_id")
         task_raw = request.form.get("task_id")
+        Tdate = request.form.get("Tdate")
         if not project_raw or not task_raw:
             flash("Missing project or task id.", "error")
             return redirect(url_for("update_task", task_id=task_id))
@@ -277,16 +280,16 @@ def update_task(task_id):
 
         cursor.execute("""
           UPDATE TimesheetMain
-          SET project_id=?, task_id=?, activity=?, hours=?, overtime=?, description=?
+          SET Tdate=?, project_id=?, task_id=?, activity=?, hours=?, overtime=?, description=?
           WHERE id=? AND user_id=?
-        """, (project_id, task_id_form, activity, hours, overtime, description, task_id, user_id))
+        """, (Tdate, project_id, task_id_form, activity, hours, overtime, description, task_id, user_id))
         conn.commit()
         conn.close()
         return redirect(url_for("home"))
 
     # GET: fetch task to prefill form
     cursor.execute("""
-        SELECT m.id, m.project_id, m.task_id, p.Project_Name, t.Task, m.activity, m.hours, m.overtime, m.description
+        SELECT m.id, m.project_id, m.task_id, p.Project_Name, t.Task, m.activity, m.hours, m.overtime, m.description, m.Tdate
         FROM TimesheetMain m
         JOIN TimesheetProjects p ON m.project_id = p.id
         JOIN TimesheetTasks t ON m.task_id = t.id

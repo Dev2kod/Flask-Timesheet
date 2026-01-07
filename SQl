@@ -34,14 +34,15 @@ ADD CONSTRAINT PK_TimesheetProjects PRIMARY KEY (id);
 ALTER TABLE dbo.TimesheetTasks
 ADD CONSTRAINT PK_TimesheetProjects PRIMARY KEY (id);
 
-CREATE TABLE dbo.TimesheetMain (
+CREATE TABLE TimesheetMain (
     id INT IDENTITY(1,1) PRIMARY KEY,          
     project_id INT NOT NULL,
     user_id INT NOT NULL,
     task_id INT NOT NULL,
     activity VARCHAR(500) NULL,
     hours DECIMAL(10,2) NOT NULL,
-    overtime DECIMAL(10,2) NULL DEFAULT 0, 
+    overtime DECIMAL(10,2) NULL DEFAULT 0,
+	Tdate DATE NOT NULL,
     description VARCHAR(MAX) NOT NULL,
 
     CONSTRAINT FK_TimesheetMain_UserDetail

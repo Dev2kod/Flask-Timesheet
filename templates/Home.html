@@ -17,6 +17,7 @@
 </div>
 <!-- Dashboard -->
 <main class="dashboard">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
   <div >
     <input type="text" class="search-bar" placeholder="Search tasks..." />
     <button class="search">Search</button>
@@ -25,46 +26,58 @@
   <div class="add-task-container">
     <button type="button" id="addTaskBtn" class="add-task-btn">+ Add Task</button>
   </div>
+  </div>
+<!-- Task Form (popup) -->
+<div class="task-form-container" id="taskFormPopup">
+  <form method="POST" action="/add_task" class="task-form">
 
-  <!-- Task Form (popup) -->
-  <div class="task-form-container">
-    <form method="POST" action="/add_task">
+    <h2 class="form-title">Add Task</h2>
 
-      <label>Select Date:</label>
-      <input type="date" name="date" required /><br /><br />
+    <div class="form-group">
+      <label for="date">Select Date:</label>
+      <input type="date" id="date" name="date" required />
+    </div>
 
-
-      <label>Select Project :</label>
+    <div class="form-group">
+      <label for="projectDropdown">Select Project:</label>
       <select id="projectDropdown" name="project_id" required>
         <option value="">-- Select Project --</option>
-      </select><br /><br/>
+      </select>
+    </div>
 
-
-      <label>Select Task :</label>
+    <div class="form-group">
+      <label for="taskDropdown">Select Task:</label>
       <select id="taskDropdown" name="task_id" required>
         <option value="">-- Select Task --</option>
-      </select><br /><br />
+      </select>
+    </div>
 
-      <label>Select Activity :</label>
-      <input type="text" name="activity" required /><br /><br />
+    <div class="form-group">
+      <label for="activity">Select Activity:</label>
+      <input type="text" id="activity" name="activity" required />
+    </div>
 
+    <div class="form-group">
+      <label for="hours">Actual Hours:</label>
+      <input type="number" id="hours" name="hours" step="0.5" min="0" max="8" required />
+    </div>
 
+    <div class="form-group">
+      <label for="overtime">Overtime:</label>
+      <input type="number" id="overtime" name="overtime" step="0.5" min="0" max="8" />
+    </div>
 
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <textarea id="description" name="description" rows="4" required></textarea>
+    </div>
 
-      <label>Actual Hours :</label>
-      <input type="number" name="hours" step="0.5" min="0" max="12" required /><br /><br />
-
-
-      <label>Overtime :</label>
-      <input type="number" name="overtime" step="0.5" min="0" max="12" /><br /><br />
-
-      <label>Description :</label>
-      <textarea name="description" rows="4" cols="50" required></textarea><br /><br />
-
+    <div class="form-actions">
       <button type="submit" class="add-task-btn">Submit</button>
       <button type="button" id="closeFormBtn" class="close-btn">Close</button>
-    </form>
-  </div>
+    </div>
+  </form>
+</div>
 
   <!-- Task Table -->
   <section class="task-section">

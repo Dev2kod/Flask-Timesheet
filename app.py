@@ -307,6 +307,87 @@ def update_task(task_id):
 
 
 
+@app.route("/profile", methods=["GET"])
+def profile():
+    user_id = session.get("user_id")
+    if not user_id:
+        return redirect(url_for("login"))
+ 
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT Id, Username, Fname, Lname, ContactNo, Email FROM UserDetail WHERE Id = ?", (user_id,))
+    row = cursor.fetchone()
+    conn.close()
+ 
+    if not row:
+        return "User not found", 404
+ 
+    user = {
+        "Id": row[0],
+        "Username": row[1],
+        "Fname": row[2],
+        "Lname": row[3],
+        "ContactNo": row[4],
+        "Email": row[5]
+    }
+ 
+    return render_template("Profile.html", user=user)
+ 
+# -------------------
+# Edit Profile
+# -------------------
+@app.route("/edit_profile", methods=["GET"])
+def edit_profile():
+    user_id = session.get("user_id")
+    if not user_id:
+        return redirect(url_for("login"))
+ 
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT Username, Fname, Lname, ContactNo, Email FROM UserDetail WHERE Id = ?", (user_id,))
+    row = cursor.fetchone()
+    conn.close()
+ 
+    if not row:
+        return "User not found", 404
+ 
+    user = {
+        "Username": row[0],
+        "Fname": row[1],
+        "Lname": row[2],
+        "ContactNo": row[3],
+        "Email": row[4]
+    }
+ 
+    return render_template("edit_profile.html", user=user)
+ 
+# -------------------
+# Update Profile
+# -------------------
+@app.route("/update_profile", methods=["POST"])
+def update_profile():
+    user_id = session.get("user_id")
+    if not user_id:
+        return redirect(url_for("login"))
+ 
+    fname = request.form['Fname']
+    lname = request.form['Lname']
+    email = request.form['Email']
+    contact = request.form['ContactNo']
+ 
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE UserDetail
+        SET Fname = ?, Lname = ?, Email = ?, ContactNo = ?
+        WHERE Id = ?
+    """, (fname, lname, email, contact, user_id))
+    conn.commit()
+    conn.close()
+ 
+    return redirect(url_for('profile'))
+ 
+
 
 
 if __name__ == "__main__":

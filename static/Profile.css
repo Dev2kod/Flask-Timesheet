@@ -1,0 +1,82 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: #eef2f7; 
+  color: #333;
+}
+
+.profile-container {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 30px;
+  background: #e6f0fa; 
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+/* Heading with its own background */
+.profile-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff; 
+  background-color: #0f4c81; 
+  padding: 12px;
+  border-radius: 8px;
+}
+
+/* Profile text */
+.profile-container p {
+  font-size: 16px;
+  margin: 10px 0;
+  line-height: 1.5;
+  color: #222; 
+}
+
+/* Button group */
+.button-group {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.button-group a.edit-btn {
+  padding: 10px 22px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  background: #0f4c81; 
+  color: #fff;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.button-group a.edit-btn:hover {
+  background: #09365d;
+  transform: translateY(-2px);
+}
+
+/* Close (X) button */
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: bold;
+  color: #0f4c81;   /* matches your theme */
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.close-btn:hover {
+  color: #09365d;   /* darker shade on hover */
+  transform: scale(1.1);
+}
+
+/* Ensure container is relative so X positions correctly */
+.profile-container {
+  position: relative;
+}
+

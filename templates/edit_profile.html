@@ -1,0 +1,48 @@
+
+{% extends "BaseWithNav.html" %}
+{% block title %}
+  <title>Edit Profile</title>
+{% endblock %}
+
+{% block style %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='edit_profile.css') }}">
+{% endblock %}
+
+{% block body %}
+  <div class="profile-container">
+    <h2>Edit Profile</h2>
+    <form action="{{ url_for('update_profile') }}" method="POST">
+      <div class="form-group">
+        <label for="Username">Username:</label>
+        <input type="text" id="Username" name="Username" value="{{ user.Username }}" readonly>
+      </div>
+
+      <div class="form-group">
+        <label for="Fname">First Name:</label>
+        <input type="text" id="Fname" name="Fname" value="{{ user.Fname }}" required>
+      </div>
+
+      <div class="form-group">
+        <label for="Lname">Last Name:</label>
+        <input type="text" id="Lname" name="Lname" value="{{ user.Lname }}" required>
+      </div>
+
+      <div class="form-group">
+        <label for="Email">Email:</label>
+        <input type="email" id="Email" name="Email" value="{{ user.Email }}" required>
+      </div>
+
+      <div class="form-group">
+        <label for="ContactNo">Contact No:</label>
+        <input type="text" id="ContactNo" name="ContactNo" value="{{ user.ContactNo }}" required>
+      </div>
+
+      <!-- Centered Buttons -->
+      <div class="button-group">
+        <button type="submit" class="update-btn">Update Profile</button>
+        <a href="{{ url_for('profile') }}" class="cancel-btn">Cancel</a>
+      </div>
+    </form>
+  </div>
+  {% endblock %}
+

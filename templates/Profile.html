@@ -1,0 +1,31 @@
+
+
+{% extends "BaseWithNav.html" %}
+
+{% block title %}
+  <title>Profile</title>
+{% endblock %}
+{% block style %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+{% endblock %}
+
+{% block body %}
+ <div class="profile-container">
+
+
+    <!-- Close (X) button --> 
+    <a href="/home" class="close-btn">&times;</a>
+
+    <h2>Employee Profile</h2>
+    <p><strong>Username:</strong> {{ user.Username }}</p>
+    <p><strong>First Name:</strong> {{ user.Fname }}</p>
+    <p><strong>Last Name:</strong> {{ user.Lname }}</p>
+    <p><strong>Email:</strong> {{ user.Email }}</p>
+    <p><strong>Contact No:</strong> {{ user.ContactNo }}</p>
+
+    <!-- Centered Edit Button -->
+    <div class="button-group">
+      <a href="/edit_profile" class="edit-btn">Edit Profile</a>
+    </div>
+  </div>
+{% endblock %}

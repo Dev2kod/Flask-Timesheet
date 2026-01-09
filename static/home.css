@@ -53,6 +53,60 @@ body {
   padding: 2rem;
 }
 
+/* Search Bar and Dropdown */
+.search-dropdown {
+  padding: 0.6rem 0.8rem;
+  border: 2px solid #3498db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: white;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  min-width: 150px;
+}
+
+.search-dropdown:hover {
+  border-color: #2980b9;
+  background-color: #ecf0f1;
+}
+
+.search-dropdown:focus {
+  outline: none;
+  border-color: #2980b9;
+  background-color: white;
+}
+
+.search-bar {
+  padding: 0.6rem 0.8rem;
+  border: 2px solid #3498db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  width: 250px;
+  transition: border-color 0.3s ease;
+}
+
+.search-bar:focus {
+  outline: none;
+  border-color: #2980b9;
+}
+
+.search {
+  background: #3498db;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: 2px solid #2980b9;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.search:hover {
+  background: #2980b9;
+  border-color: #1f618d;
+}
+
 /* Add Task Button */
 .add-task-container {
   text-align: right; /* aligns button to right side */

@@ -229,6 +229,54 @@ def logout():
     return render_template("landing.html")
 
 # -------------------
+# Search tasks
+# -------------------
+@app.route("/search_tasks", methods=["POST"])
+def search_tasks():
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"success": False, "error": "Not authenticated"}), 401
+
+    try:
+        data = request.get_json()
+        search_term = data.get("search_term", "").strip()
+        column = data.get("column", "").strip()
+
+        if not search_term or not column:
+            return jsonify({"success": False, "error": "Search term and column are required"}), 400
+
+        # Validate column name to prevent SQL injection
+        valid_columns = ["Project_Name", "Task", "activity", "Tdate", "description"]
+        if column not in valid_columns:
+            return jsonify({"success": False, "error": "Invalid column"}), 400
+
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        # Build the query dynamically
+        query = f"""
+            SELECT m.id, p.Project_Name, t.Task, m.activity, m.hours, m.overtime, m.description, m.Tdate
+            FROM TimesheetMain m
+            JOIN TimesheetProjects p ON m.project_id = p.id
+            JOIN TimesheetTasks t ON m.task_id = t.id
+            WHERE m.user_id = ? AND {column} LIKE ?
+            ORDER BY m.Tdate DESC;
+        """
+        
+        cursor.execute(query, (user_id, f"%{search_term}%"))
+        rows = cursor.fetchall()
+        columns = [col[0] for col in cursor.description]
+        conn.close()
+
+        results = [dict(zip(columns, row)) for row in rows]
+
+        return jsonify({"success": True, "results": results})
+
+    except Exception as e:
+        print("Search error:", e)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+# -------------------
 # Delete task
 # -------------------
 @app.route("/delete_task/<int:task_id>", methods=["POST"])

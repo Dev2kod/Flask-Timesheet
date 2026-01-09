@@ -10,9 +10,13 @@
 {% endblock %}
 
 {% block body %}
-    <!-- Write Your Code here -->
-     <input type="text" placeholder="Enter User Data">
-     {% for row in rows %}
-        <p>{{ row }}</p>
-     {% endfor %}
+        <!-- Write Your Code here -->
+        <form method="get" action="{{ url_for('analysis_bp.analysis') }}">
+            <label>Start Date:</label>
+            <input type="date" name="start_date" value="{{ start_date or '' }}">
+            <label>End Date:</label>
+            <input type="date" name="end_date" value="{{ end_date or '' }}">
+            <button type="submit">Update</button>
+        </form>
+        <img src="data:image/png;base64,{{chart_data}}" style="width: 40%;" alt="Add Date"><br/>
 {% endblock %}

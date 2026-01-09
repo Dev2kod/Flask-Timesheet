@@ -1,9 +1,14 @@
 from flask import Flask, flash, render_template, request, session, jsonify, redirect, url_for
 import pyodbc
 from flask_bcrypt import Bcrypt
+from db import get_connection
+from analysis_api import analysis_bp
+
+
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
+app.register_blueprint(analysis_bp)
 
 app.secret_key = "TCE2025SecretKey"
 
@@ -14,6 +19,8 @@ conn_str = (
     "Database=YEDP2024;"
     "Trusted_Connection=yes;"
 )
+
+
 
 def get_connection():
     return pyodbc.connect(conn_str)
@@ -387,8 +394,6 @@ def update_profile():
  
     return redirect(url_for('profile'))
  
-
-
 
 if __name__ == "__main__":
     app.run(debug=True)

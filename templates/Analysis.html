@@ -1,0 +1,18 @@
+{% extends "BaseWithNav.html" %}
+{% block title %}
+    <title>Analysis Page</title>
+{% endblock %}
+
+{% block style %}
+    <style>
+     /* //Style */
+    </style>
+{% endblock %}
+
+{% block body %}
+    <!-- Write Your Code here -->
+     <input type="text" placeholder="Enter User Data">
+     {% for row in rows %}
+        <p>{{ row }}</p>
+     {% endfor %}
+{% endblock %}

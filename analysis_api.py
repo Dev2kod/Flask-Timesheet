@@ -58,7 +58,7 @@ def analysis():
         data = [1]
 
     plt.pie(data, labels=labels, autopct="%1.1f%%")
-    plt.legend()
+    plt.legend(title="Projects")
 
     img_buffer = io.BytesIO()
     plt.savefig(img_buffer, format="png")

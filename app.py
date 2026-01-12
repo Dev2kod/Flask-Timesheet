@@ -279,6 +279,8 @@ def search_tasks():
 # -------------------
 # Delete task
 # -------------------
+
+# Delete task Based On Task ID
 @app.route("/delete_task/<int:task_id>", methods=["POST"])
 def delete_task(task_id):
     user_id = session.get("user_id")
@@ -293,8 +295,7 @@ def delete_task(task_id):
 
     return redirect(url_for("home"))
 
-
-
+# Update task Based On Task ID
 @app.route("/update_task/<int:task_id>", methods=["GET", "POST"])
 def update_task(task_id):
     user_id = session.get("user_id")
@@ -360,8 +361,7 @@ def update_task(task_id):
     conn.close()
     return render_template("Update.html", task=task)
 
-
-
+# Getting Profile Details Using Task ID
 @app.route("/profile", methods=["GET"])
 def profile():
     user_id = session.get("user_id")
@@ -391,6 +391,7 @@ def profile():
 # -------------------
 # Edit Profile
 # -------------------
+
 @app.route("/edit_profile", methods=["GET"])
 def edit_profile():
     user_id = session.get("user_id")
@@ -419,6 +420,7 @@ def edit_profile():
 # -------------------
 # Update Profile
 # -------------------
+
 @app.route("/update_profile", methods=["POST"])
 def update_profile():
     user_id = session.get("user_id")

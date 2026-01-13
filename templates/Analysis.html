@@ -5,11 +5,15 @@
 
 {% block style %}
     <style>
-     /* //Style */
+        /* Layout + card styles (kept for layout; element-specific sizing done inline) */
+        .charts-row { display:flex; gap:24px; align-items:flex-start; flex-wrap:wrap; margin-top:16px; }
+        .chart-card { background:#fff; border:1px solid #e6e6e6; border-radius:8px; padding:16px; box-shadow:0 2px 6px rgba(0,0,0,0.04); flex:1 1 400px; max-width:48%; min-width:300px; }
+        .muted { color:#666; font-size:0.95rem; }
     </style>
 {% endblock %}
 
 {% block body %}
+<<<<<<< HEAD
 <div>
         <!-- Write Your Code here -->
         <form method="get" action="{{ url_for('analysis_bp.analysis') }}">
@@ -23,3 +27,101 @@
         <a href="{{ url_for('timesheet_routes_bp.weekly_timesheet_page') }}" class="btn btn-primary">Go to Weekly Timesheet</a>
 </div>
         {% endblock %}
+=======
+    {% set placeholder_svg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400'><rect width='100%' height='100%' fill='%23f8fafc'/><circle cx='180' cy='200' r='110' fill='%23e2e8f0'/><text x='50%' y='50%' dy='12' text-anchor='middle' fill='%23999' font-family='Arial' font-size='20'>No data</text></svg>" %}
+
+    <form method="get" action="{{ url_for('analysis_bp.analysis') }}">
+        <label>Start Date:</label>
+        <input type="date" name="start_date" value="{{ start_date or '' }}">
+        <label>End Date:</label>
+        <input type="date" name="end_date" value="{{ end_date or '' }}">
+        <button type="submit">Update</button>
+        <span class="muted">Select a date range to refresh charts</span>
+    </form>
+
+    <div class="charts-row">
+        <div class="chart-card">
+            <h3 style="margin-top:0">Project time distribution</h3>
+            <!-- inline style ensures consistent height for the pie/placeholder -->
+            <img
+                src="{{ (chart_data and ('data:image/png;base64,' + chart_data)) or placeholder_svg }}"
+                alt="Pie Chart"
+                style="width:100%; height:300px; object-fit:contain; display:block; border-radius:4px; background:#fafafa;">
+        </div>
+
+        <div class="chart-card">
+            <h3 style="margin-top:0">Daily hours</h3>
+
+            <!-- Inline container sets exact chart height; canvas fills it -->
+            <div style="height:50vh; position:relative;">
+                <canvas id="lineChart" style="width:100%; height:100%; display:block;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const startDate = "{{ start_date }}";
+        const endDate = "{{ end_date }}";
+        const apiUrl = "{{ url_for('analysis_bp.analysis_data') }}";
+
+        function drawLineChart(labels, dataPoints) {
+            const ctx = document.getElementById('lineChart').getContext('2d');
+            if (window._lineChart) {
+                window._lineChart.destroy();
+            }
+            window._lineChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Hours worked',
+                        data: dataPoints,
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: 'rgba(75,192,192,0.12)',
+                        tension: 0.2,
+                        fill: true,
+                        pointRadius: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, 
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { mode: 'index', intersect: false }
+                    },
+                    scales: {
+                        x: { display: true, title: { display: true, text: 'Date' } },
+                        y: { display: true, title: { display: true, text: 'Hours' }, beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        function fetchLineData() {
+            const params = new URLSearchParams({ start_date: startDate, end_date: endDate });
+            fetch(apiUrl + '?' + params)
+                .then(r => r.json())
+                .then(data => {
+                    if (data && Array.isArray(data) && data.length) {
+                        const labels = data.map(d => d.date);
+                        const points = data.map(d => d.hours);
+                        drawLineChart(labels, points);
+                    } else {
+                        drawLineChart(['No data'], [0]);
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    drawLineChart(['Error'], [0]);
+                });
+        }
+
+        // run on load
+        fetchLineData();
+    </script>
+{% endblock %}
+>>>>>>> refs/remotes/origin/main

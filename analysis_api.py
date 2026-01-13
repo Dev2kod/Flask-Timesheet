@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, session, redirect, url_for, request, flash
+from flask import jsonify
 from db import get_connection
 import matplotlib
 matplotlib.use("Agg")
@@ -67,3 +68,35 @@ def analysis():
 
     img_data = base64.b64encode(img_buffer.read()).decode('utf-8')
     return render_template("Analysis.html", chart_data=img_data, start_date=start_date, end_date=end_date)
+
+
+@analysis_bp.route("/analysis/data", methods=["GET"])
+def analysis_data():
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"error": "not authenticated"}), 401
+
+    start_date = request.args.get("start_date") or "2026-01-01"
+    end_date = request.args.get("end_date") or "2026-01-05"
+
+    try:
+        datetime.strptime(start_date, "%Y-%m-%d")
+        datetime.strptime(end_date, "%Y-%m-%d")
+    except ValueError:
+        return jsonify({"error": "Invalid date format. Use YYYY-MM-DD."}), 400
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT Tdate, SUM(hours + COALESCE(overtime, 0)) AS Total_hours_worked "
+        "FROM TimesheetMain "
+        "WHERE user_id = ? AND Tdate >= ? AND Tdate <= ? "
+        "GROUP BY Tdate "
+        "ORDER BY Tdate;",
+        (user_id, start_date, end_date)
+    )
+    rows = cursor.fetchall()
+    conn.close()
+
+    data = [{"date": str(r[0]), "hours": float(r[1])} for r in rows]
+    return jsonify(data)

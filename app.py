@@ -105,7 +105,7 @@ def login():
 
         if bcrypt.check_password_hash(stored_hash, Password):
             session["user_id"] = user_id
-            return render_template("Analysis.html")
+            return redirect(url_for('analysis_bp.analysis'))
         else:
             return render_template("loginform.html", error="Invalid username or password" ,flag = 1), 401
 
@@ -113,7 +113,7 @@ def login():
     if user_id is None:
         return render_template("loginform.html" , flag = 0)
     else:
-        return render_template("Analysis.html")
+        return redirect(url_for('analysis_bp.analysis'))
 
 # -------------------
 # Data helpers

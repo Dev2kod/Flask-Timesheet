@@ -1,0 +1,278 @@
+<!-- weekly_timesheet.html -->
+<!-- This is the HTML template for displaying the weekly timesheet page.
+     It extends the base template (assuming BaseWithNav.html exists) for consistent layout.
+     Uses JavaScript to fetch data from the API and display it in a table.
+     Also includes a form to add new entries. -->
+
+{% extends "BaseWithNav.html" %}  <!-- Extend the base template with navigation -->
+
+{% block title %}Weekly Timesheet{% endblock %}  <!-- Page title -->
+
+{% block style %}
+<style>
+/* Weekly Timesheet specific styles inspired by Home.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f0f6fb;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.card-header {
+    background: #3498db;
+    color: white;
+    padding: 1rem;
+    border-radius: 8px 8px 0 0;
+}
+
+.card-header h5 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 2px solid #3498db;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #2980b9;
+}
+
+.btn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-primary {
+    background: #27ae60;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1e8449;
+}
+
+.btn-secondary {
+    background: #3498db;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #2980b9;
+}
+
+/* Weekly Timesheet Table */
+.timesheet-section {
+    margin-top: 2rem;
+}
+
+.timesheet-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    margin-top: 1rem;
+}
+
+.timesheet-table th, .timesheet-table td {
+    border: 1px solid #ddd;
+    padding: 0.75rem;
+    text-align: center;
+}
+
+.timesheet-table th {
+    background: #3498db;
+    color: white;
+    font-weight: bold;
+}
+
+.timesheet-table tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.timesheet-table tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+.total-row {
+    background: #3498db !important;
+    color: white !important;
+    font-weight: bold !important;
+}
+
+.total-row td {
+    border-top: 2px solid #2980b9 !important;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">Weekly Timesheet</h1>
+
+    <!-- Form to add a new timesheet entry -->
+    <!-- Section to select and display weekly timesheet -->
+    <div class="card">
+        <div class="card-header">
+            <h5>View Weekly Records</h5>
+            <div style="margin-top: 1rem;">
+                <label for="week-start" style="display: inline-block; margin-right: 1rem;">Select Week Start (Monday):</label>
+                <input type="date" id="week-start" class="form-control" style="width: auto; display: inline-block; margin-right: 1rem;" value="2026-01-13">
+                <button id="load-week" class="btn btn-secondary">Load Week</button>
+            </div>
+        </div>
+        <div class="card-body">
+            <!-- Weekly Timesheet Table -->
+            <section class="timesheet-section">
+                <table class="timesheet-table" id="timesheet-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Project</th>
+                            <th>Task</th>
+                            <th>Activity</th>
+                            <th>Hours</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Table rows will be populated by JavaScript -->
+                        <tr id="no-data-row">
+                            <td colspan="5" class="no-data">Select a week to view your timesheet records</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for handling the page interactions -->
+<script>
+    // Function to add a new timesheet entry
+    
+
+    // Function to load weekly timesheet
+    document.getElementById('load-week').addEventListener('click', function() {
+        const weekStart = document.getElementById('week-start').value;
+        if (!weekStart) {
+            alert('Please select a week start date.');
+            return;
+        }
+
+        const button = document.getElementById('load-week');
+        const originalText = button.textContent;
+        button.textContent = 'Loading...';
+        button.disabled = true;
+
+        console.log('Loading week:', weekStart); // Debug log
+
+        // Send GET request to get weekly data
+        fetch(`/api/timesheet/weekly/${weekStart}`)
+        .then(response => {
+            console.log('Response status:', response.status); // Debug log
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Response data:', data); // Debug log
+            if (data.error && data.error === 'User not logged in') {
+                alert('You need to log in first. Redirecting to login page...');
+                window.location.href = '/login';
+                return;
+            }
+            if (data.timesheet) {
+                // Populate the table
+                const tbody = document.querySelector('#timesheet-table tbody');
+                // Clear existing rows except the no-data row
+                tbody.innerHTML = '';
+
+                if (data.timesheet.length === 0) {
+                    // No data found
+                    const noDataRow = document.createElement('tr');
+                    noDataRow.innerHTML = `
+                        <td colspan="5" class="no-data">No timesheet records found for this week</td>
+                    `;
+                    tbody.appendChild(noDataRow);
+                } else {
+                    // Populate with data
+                    let totalHours = 0;
+                    data.timesheet.forEach(entry => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${entry.date}</td>
+                            <td>${entry.project}</td>
+                            <td>${entry.task}</td>
+                            <td>${entry.activity}</td>
+                            <td>${entry.hours}</td>
+                        `;
+                        tbody.appendChild(row);
+                        totalHours += parseFloat(entry.hours);
+                    });
+
+                    // Add total row
+                    const totalRow = document.createElement('tr');
+                    totalRow.className = 'total-row';
+                    totalRow.innerHTML = `
+                        <td colspan="4" style="text-align: right; padding-right: 1rem;">Total Hours:</td>
+                        <td>${totalHours.toFixed(2)}</td>
+                    `;
+                    tbody.appendChild(totalRow);
+                }
+            } else {
+                alert('Error: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error loading timesheet: ' + error.message);
+        })
+        .finally(() => {
+            button.textContent = originalText;
+            button.disabled = false;
+        });
+    });
+</script>
+
+{% endblock %}

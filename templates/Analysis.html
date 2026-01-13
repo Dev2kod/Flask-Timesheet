@@ -10,6 +10,7 @@
 {% endblock %}
 
 {% block body %}
+<div>
         <!-- Write Your Code here -->
         <form method="get" action="{{ url_for('analysis_bp.analysis') }}">
             <label>Start Date:</label>
@@ -19,4 +20,6 @@
             <button type="submit">Update</button>
         </form>
         <img src="data:image/png;base64,{{chart_data}}" style="width: 40%;" alt="Add Date"><br/>
-{% endblock %}
+        <a href="{{ url_for('timesheet_routes_bp.weekly_timesheet_page') }}" class="btn btn-primary">Go to Weekly Timesheet</a>
+</div>
+        {% endblock %}

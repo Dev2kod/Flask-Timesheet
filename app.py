@@ -3,12 +3,15 @@ import pyodbc
 from flask_bcrypt import Bcrypt
 from db import get_connection
 from analysis_api import analysis_bp
-
+from timesheet_api import timesheet_bp
+from timesheet_routes import timesheet_routes_bp
 
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 app.register_blueprint(analysis_bp)
+app.register_blueprint(timesheet_bp)
+app.register_blueprint(timesheet_routes_bp)
 
 app.secret_key = "TCE2025SecretKey"
 

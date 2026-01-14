@@ -15,9 +15,10 @@ analysis_bp = Blueprint("analysis_bp", __name__)
 @analysis_bp.route("/analysis", methods=["GET"])
 def analysis():
     user_id = session.get("user_id")
+    username = session.get("username")
     # Read dates from query string (GET). Format: YYYY-MM-DD
     start_date = request.args.get("start_date") or "2026-01-01"
-    end_date = request.args.get("end_date") or "2026-01-05"
+    end_date = request.args.get("end_date") or "2026-01-30"
     if not user_id:
         return redirect(url_for("login"))
  
@@ -67,7 +68,7 @@ def analysis():
     img_buffer.seek(0)
 
     img_data = base64.b64encode(img_buffer.read()).decode('utf-8')
-    return render_template("Analysis.html", chart_data=img_data, start_date=start_date, end_date=end_date)
+    return render_template("Analysis.html", chart_data=img_data, start_date=start_date, end_date=end_date,username = username)
 
 
 @analysis_bp.route("/analysis/data", methods=["GET"])

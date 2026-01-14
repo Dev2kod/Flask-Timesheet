@@ -35,7 +35,21 @@ html, body {
 .shape-2 { width: 40vw; height: 26vh; right: 0; top: 6vh; transform: skewY(10deg); background: #A3D0FF; }
 .shape-3 { width: 42vw; height: 24vh; left: 8vw; bottom: 0; transform: skewY(8deg); background: #7EC2FF; }
  
-
+.link{
+  text-decoration: none;
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: var(--ink-900);
+  font-size: 15px;
+}
+a{
+  text-decoration: none;
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: var(--ink-900);
+  
+  }
+a:hover{
+  color: #5EB0F3;
+}
 /* Background gradient */
 /* Login box */
 .login-container {

@@ -71,7 +71,6 @@ def create_user():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     user_id = session.get("user_id")
-
     # Handle POST (login attempt)
     if request.method == "POST":
         # If already logged in, send them to the homepage
@@ -89,7 +88,7 @@ def login():
             conn = get_connection()
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT Id, Password FROM UserDetail WHERE Username = ?",
+                "SELECT Id, Password,Fname FROM UserDetail WHERE Username = ?",
                 (Username,)
             )
             row = cursor.fetchone()
@@ -105,9 +104,11 @@ def login():
 
         user_id = row[0]
         stored_hash = row[1]
+        username = row[2]
 
         if bcrypt.check_password_hash(stored_hash, Password):
             session["user_id"] = user_id
+            session["username"] = username
             return redirect(url_for('analysis_bp.analysis'))
         else:
             return render_template("loginform.html", error="Invalid username or password" ,flag = 1), 401
